@@ -14,8 +14,9 @@ export const web = Cloudflare.Website.Vite("web", {
     DATABASE_AUTH_TOKEN: Config.Redacted("DATABASE_AUTH_TOKEN"),
   },
   dev: {
-    port: 3001,
+    port: 3005,
   },
+  name: "humara-neta"
 });
 
 export type WebEnv = Cloudflare.InferEnv<typeof web>;

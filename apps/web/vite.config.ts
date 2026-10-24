@@ -5,7 +5,7 @@ import { defineConfig } from "vite-plus";
 
 export default defineConfig({
   server: {
-    port: 3001,
+    port: 3005,
   },
   build: {
     rollupOptions: {
