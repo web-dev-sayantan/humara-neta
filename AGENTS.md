@@ -130,3 +130,19 @@ Most formatting and common issues are automatically fixed by Oxlint + Oxfmt. Run
 ## Project Notes
 
 See [NOTES.md](./NOTES.md) for temporary project-specific notes, including dependency workarounds.
+
+---
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in this repo's GitHub Issues (`Sheer-Daara/humara-neta`), driven with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical triage roles map 1:1 to labels of the same name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
