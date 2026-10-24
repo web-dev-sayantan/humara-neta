@@ -124,3 +124,9 @@ Oxlint + Oxfmt will catch most mechanical issues automatically. Focus your atten
 ---
 
 Most formatting and common issues are automatically fixed by Oxlint + Oxfmt. Run `bunx ultracite fix` before committing to ensure compliance.
+
+---
+
+## Project Notes
+
+See [NOTES.md](./NOTES.md) for temporary project-specific notes, including dependency workarounds.

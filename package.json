@@ -45,6 +45,7 @@
     "fix": "ultracite fix"
   },
   "dependencies": {
+    "node": "26",
     "zod": "catalog:"
   },
   "devDependencies": {

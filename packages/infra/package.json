@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "check-types": "tsc --noEmit",
-    "dev": "alchemy dev",
-    "deploy": "alchemy deploy",
-    "destroy": "alchemy destroy"
+    "dev": "node scripts/alchemy.mjs dev",
+    "deploy": "node scripts/alchemy.mjs deploy",
+    "destroy": "node scripts/alchemy.mjs destroy"
   },
   "dependencies": {
     "zod": "catalog:"
