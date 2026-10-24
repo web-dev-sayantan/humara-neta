@@ -1,0 +1,52 @@
+{
+  "name": "web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b ../../packages/api && vp build",
+    "serve": "vp preview",
+    "check-types": "tsc -b ../../packages/api && vp build && tsc --noEmit",
+    "dev:bare": "vp dev",
+    "env:generate": "varlock codegen"
+  },
+  "dependencies": {
+    "@humara-neta/api": "workspace:*",
+    "@humara-neta/db": "workspace:*",
+    "@humara-neta/ui": "workspace:*",
+    "@libsql/client": "catalog:",
+    "@orpc/client": "catalog:",
+    "@orpc/openapi": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/tanstack-query": "^1.15.6",
+    "@orpc/zod": "catalog:",
+    "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/react-query": "^5.104.2",
+    "@tanstack/react-router": "^1.170.44",
+    "@tanstack/react-router-ssr-query": "^1.167.3",
+    "@tanstack/react-start": "^1.169.1",
+    "libsql": "catalog:",
+    "lucide-react": "^1.56.0",
+    "next-themes": "catalog:",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "sonner": "catalog:",
+    "tailwindcss": "catalog:",
+    "varlock": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@humara-neta/config": "workspace:*",
+    "@humara-neta/infra": "workspace:*",
+    "@tanstack/react-query-devtools": "^5.104.2",
+    "@tanstack/react-router-devtools": "^1.167.2",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "jsdom": "^30.1.2",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "web-vitals": "^6.2.3"
+  }
+}

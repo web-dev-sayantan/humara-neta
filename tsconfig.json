@@ -1,0 +1,3 @@
+{
+  "extends": "@humara-neta/config/tsconfig.base.json"
+}

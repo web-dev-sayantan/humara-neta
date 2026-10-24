@@ -1,0 +1,67 @@
+{
+  "name": "humara-neta",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "catalog": {
+      "zod": "^4.5.4",
+      "vite": "npm:@voidzero-dev/vite-plus-core@1.4.0",
+      "typescript": "^6.0.3",
+      "varlock": "1.23.0",
+      "next-themes": "^0.4.6",
+      "sonner": "^2.0.8",
+      "tailwindcss": "^4.3.3",
+      "@libsql/client": "0.18.0",
+      "libsql": "0.5.29",
+      "@orpc/server": "^1.15.6",
+      "@orpc/client": "^1.15.6",
+      "@orpc/openapi": "^1.15.6",
+      "@orpc/zod": "^1.15.6"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vp run -r dev",
+    "build": "vp run -r build",
+    "check-types": "vp run -r check-types",
+    "check": "vp check && vp run -r check-types",
+    "lint": "vp lint",
+    "format": "vp fmt",
+    "staged": "vp staged",
+    "hooks:setup": "vp config",
+    "dev:web": "vp run --filter web dev:bare",
+    "db:push": "vp run --filter @humara-neta/db db:push",
+    "db:studio": "vp run --filter @humara-neta/db db:studio",
+    "db:generate": "vp run --filter @humara-neta/db db:generate",
+    "db:migrate": "vp run --filter @humara-neta/db db:migrate",
+    "db:local": "vp run --filter @humara-neta/db db:local",
+    "deploy": "vp run --filter @humara-neta/infra deploy",
+    "destroy": "vp run --filter @humara-neta/infra destroy",
+    "env:generate": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
+    "postinstall": "varlock codegen --path ./apps/web/ && varlock codegen --path ./packages/db/",
+    "fix": "ultracite fix"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260906.1",
+    "@humara-neta/config": "workspace:*",
+    "@types/node": "^26.4.1",
+    "oxfmt": "^0.71.0",
+    "oxlint": "^1.86.0",
+    "rolldown": "1.2.15",
+    "typescript": "catalog:",
+    "ultracite": "8.0.0",
+    "varlock": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "1.4.0"
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.4.0"
+  },
+  "packageManager": "bun@1.4.4"
+}
