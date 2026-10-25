@@ -32,6 +32,18 @@ to the same address). Their `user` row is created the first time they sign in â€
 user row exists before that, because a non-allowlisted address is refused before
 one is made.
 
+## Signing in
+
+Google is the main way in; the one-time code is there for someone without a
+Google account. Both paths check the same allowlist row, and both resolve to the
+same `user` row when they use the same address, so audit stamps never split one
+person into two identities. An address that is not on the allowlist is never
+mailed a code.
+
+A code is six digits, expires in five minutes, and allows three guesses; after
+that it is discarded and a new one must be requested. Codes are stored as a
+digest, not as the digits that were mailed.
+
 ## Add an editor
 
 ```sql

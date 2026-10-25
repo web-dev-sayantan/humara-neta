@@ -3,11 +3,13 @@ import { findAllowlistRole } from "@humara-neta/db/allowlist";
 import { findAuthUser } from "@humara-neta/db/users";
 import * as schema from "@humara-neta/db/schema/index";
 import { betterAuth } from "better-auth";
+import type { GoogleOptions } from "better-auth/social-providers";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { emailOTP } from "better-auth/plugins/email-otp";
 
 import { NOT_ALLOWLISTED, NOT_ALLOWLISTED_MESSAGE } from "./refusal";
+import { ONE_TIME_CODE, type OneTimeCode } from "./one-time-code";
 
 const ONE_TIME_CODE_PATH = "/email-otp/send-verification-otp";
 
@@ -15,8 +17,8 @@ export interface AuthConfig {
   db: Database;
   secret: string;
   baseURL: string;
-  google: { clientId: string; clientSecret: string };
-  sendVerificationOTP: (input: { email: string; otp: string }) => Promise<void>;
+  google: GoogleOptions;
+  sendVerificationOTP: (input: OneTimeCode) => Promise<void>;
 }
 
 /**
@@ -31,6 +33,10 @@ export interface AuthConfig {
  *   pointless mail is sent either.
  *
  * Both checks read the same allowlist row. Nothing in the application writes it.
+ *
+ * Accounts are linked by verified email, so signing in by code and by Google
+ * with the same address keeps one `user` row — and one set of `created_by` /
+ * `updated_by` stamps.
  */
 export function createAuth(config: AuthConfig) {
   const refuseUnlessAllowlisted = async (email: string | null | undefined) => {
@@ -50,8 +56,16 @@ export function createAuth(config: AuthConfig) {
     secret: config.secret,
     database: drizzleAdapter(config.db, { provider: "sqlite", schema }),
     socialProviders: { google: config.google },
+    account: {
+      accountLinking: { enabled: true },
+    },
     plugins: [
       emailOTP({
+        otpLength: ONE_TIME_CODE.length,
+        expiresIn: ONE_TIME_CODE.expiresInSeconds,
+        allowedAttempts: ONE_TIME_CODE.allowedAttempts,
+        // A code at rest is a credential: keep a digest, never the digits.
+        storeOTP: "hashed",
         sendVerificationOTP: ({ email, otp }) => config.sendVerificationOTP({ email, otp }),
       }),
     ],

@@ -14,6 +14,13 @@ export interface SentOTP {
   otp: string;
 }
 
+/** A Google profile shaped like a decoded ID token, without reaching Google. */
+function googleIdToken({ email, name }: { email: string; name: string }): string {
+  const claims = { sub: `google-${email}`, email, email_verified: true, name };
+  const payload = Buffer.from(JSON.stringify(claims)).toString("base64url");
+  return `header.${payload}.signature`;
+}
+
 /**
  * The test seam: a throwaway libSQL database of its own, migrated, plus a
  * router client whose context is constructed directly. Identity is never
@@ -31,6 +38,8 @@ export async function createTestHarness() {
     google: {
       clientId: "google-client-id",
       clientSecret: "google-client-secret",
+      // Tests never reach Google: the signature is not what this suite checks.
+      verifyIdToken: async () => true,
     },
     sendVerificationOTP: async ({ email, otp }) => {
       sentOTPs.push({ email, otp });
@@ -69,6 +78,11 @@ export async function createTestHarness() {
     return sent.otp;
   }
 
+  function headersWithCookie(setCookie: string | null) {
+    const cookie = setCookie?.split(";")[0] ?? "";
+    return new Headers({ cookie });
+  }
+
   /** Signs in with a one-time code and returns request headers carrying the session. */
   async function signIn(email: string) {
     const otp = await requestOtp(email);
@@ -76,8 +90,24 @@ export async function createTestHarness() {
       body: { email, otp },
       returnHeaders: true,
     });
-    const cookie = headers.get("set-cookie")?.split(";")[0] ?? "";
-    return new Headers({ cookie });
+    return headersWithCookie(headers.get("set-cookie"));
+  }
+
+  /**
+   * Signs in with a Google identity for `email`, through Better Auth's ID-token
+   * path. The profile is real to Better Auth; only Google's signature check is
+   * stubbed, so the linking rules run for real.
+   */
+  async function signInWithGoogle(email: string) {
+    const { headers } = await auth.api.signInSocial({
+      body: {
+        provider: "google",
+        idToken: { token: googleIdToken({ email, name: "Ada Lovelace" }) },
+        callbackURL: "/admin",
+      },
+      returnHeaders: true,
+    });
+    return headersWithCookie(headers.get("set-cookie"));
   }
 
   function contextFrom(headers: Headers) {
@@ -93,6 +123,7 @@ export async function createTestHarness() {
     clientFor,
     requestOtp,
     signIn,
+    signInWithGoogle,
     contextFrom,
   };
 }

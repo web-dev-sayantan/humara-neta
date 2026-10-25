@@ -1,8 +1,9 @@
 import { NOT_ALLOWLISTED, NOT_ALLOWLISTED_MESSAGE } from "@humara-neta/api/refusal";
-import { Button } from "@humara-neta/ui/components/button";
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
+import { SignInScreen } from "@/components/sign-in-screen";
+import { GENERIC_SIGN_IN_FAILURE } from "@/lib/auth-failures";
 import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/sign-in")({
@@ -11,58 +12,42 @@ export const Route = createFileRoute("/sign-in")({
   component: SignIn,
 });
 
-const GENERIC_FAILURE = "Sign-in didn't finish. Please try again.";
-
 function SignIn() {
   const { error } = Route.useSearch();
-  const [pending, setPending] = useState(false);
-  const [failure, setFailure] = useState<string | undefined>();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const refusal = error === NOT_ALLOWLISTED ? NOT_ALLOWLISTED_MESSAGE : undefined;
-  const message = refusal ?? failure ?? (error ? GENERIC_FAILURE : undefined);
+  const initialMessage = refusal ?? (error ? GENERIC_SIGN_IN_FAILURE : undefined);
 
-  async function signInWithGoogle() {
-    setPending(true);
-    setFailure(undefined);
+  async function googleSignIn() {
+    return authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/admin",
+      errorCallbackURL: "/sign-in",
+    });
+  }
 
-    try {
-      const result = await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/admin",
-        errorCallbackURL: "/sign-in",
-      });
+  async function requestCode(email: string) {
+    return authClient.emailOtp.sendVerificationOtp({ email, type: "sign-in" });
+  }
 
-      if (result.error) {
-        setFailure(GENERIC_FAILURE);
-      }
-    } catch {
-      setFailure(GENERIC_FAILURE);
-    } finally {
-      setPending(false);
-    }
+  async function verifyCode(email: string, otp: string) {
+    return authClient.signIn.emailOtp({ email, otp });
+  }
+
+  async function onSignedIn() {
+    queryClient.clear();
+    await navigate({ to: "/admin" });
   }
 
   return (
-    <main className="mx-auto flex min-h-full w-full max-w-md flex-col justify-center gap-6 px-4 py-16">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-xl font-medium">Sign in</h1>
-        <p className="text-muted-foreground text-sm">
-          The panel is open to people whose address has been added to the list.
-        </p>
-      </header>
-
-      {message ? (
-        <p
-          aria-live="polite"
-          className="border-border bg-muted/40 rounded-none border px-3 py-2 text-sm"
-        >
-          {message}
-        </p>
-      ) : null}
-
-      <Button disabled={pending} onClick={signInWithGoogle} size="lg">
-        {pending ? "Opening Google…" : "Continue with Google"}
-      </Button>
-    </main>
+    <SignInScreen
+      googleSignIn={googleSignIn}
+      initialMessage={initialMessage}
+      onSignedIn={onSignedIn}
+      requestCode={requestCode}
+      verifyCode={verifyCode}
+    />
   );
 }
