@@ -48,6 +48,19 @@ bun run dev
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the fullstack application.
 
+## Admin access
+
+The admin panel is open only to email addresses on the `allowlist` table, each
+carrying a role (`admin` or `editor`). There is no allowlist screen: rows are
+added and removed with SQL. Seeding the first administrator, adding an editor and
+removing someone's access are documented in
+[docs/admin-access.md](./docs/admin-access.md).
+
+Sign-in uses Better Auth: Google first, one-time code by email as the fallback.
+Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`,
+`GOOGLE_CLIENT_SECRET`, `RESEND_API_KEY` and `EMAIL_FROM` in `apps/web/.env`
+before signing in (see `apps/web/.env.schema`).
+
 ## UI Customization
 
 React web apps in this stack share shadcn/ui primitives through `packages/ui`.
@@ -134,6 +147,7 @@ humara-neta/
 - `bun run db:studio`: Open database studio UI
 - `bun run db:local`: Start the local SQLite database
 - `bun run check`: Run Vite+ format/lint checks and workspace TypeScript checks
+- `bun run test`: Run the Vitest suite (`vp test`)
 - `bun run lint`: Run Vite+ lint checks
 - `bun run format`: Run Vite+ formatting
 - `bun run staged`: Run Vite+ checks against staged files

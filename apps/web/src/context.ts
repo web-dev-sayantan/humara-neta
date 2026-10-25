@@ -1,12 +1,12 @@
+import { buildContext } from "@humara-neta/api/context";
 import type { Context as ApiContext } from "@humara-neta/api/context";
 
-import { getDb } from "./services";
+import { getAuth, getDb } from "./services";
 
-export async function createContext(_options: { req: Request }): Promise<ApiContext> {
-  const db = await getDb();
-  return {
-    db,
-  };
+export async function createContext({ req }: { req: Request }): Promise<ApiContext> {
+  const db = getDb();
+
+  return buildContext({ db, auth: getAuth(), headers: req.headers });
 }
 
 export type Context = Awaited<ReturnType<typeof createContext>>;

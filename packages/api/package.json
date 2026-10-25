@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "check-types": "tsc -b"
+    "check-types": "tsc -b && tsc -p tsconfig.test.json"
   },
   "dependencies": {
     "@humara-neta/db": "workspace:*",
@@ -15,6 +15,7 @@
     "@orpc/openapi": "catalog:",
     "@orpc/server": "catalog:",
     "@orpc/zod": "catalog:",
+    "better-auth": "^1.7.12",
     "zod": "catalog:"
   },
   "devDependencies": {
