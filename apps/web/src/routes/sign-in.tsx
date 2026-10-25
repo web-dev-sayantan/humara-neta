@@ -1,9 +1,8 @@
-import { NOT_ALLOWLISTED, NOT_ALLOWLISTED_MESSAGE } from "@humara-neta/api/refusal";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { SignInScreen } from "@/components/sign-in-screen";
-import { GENERIC_SIGN_IN_FAILURE } from "@/lib/auth-failures";
+import { failureMessage } from "@/lib/auth-failures";
 import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/sign-in")({
@@ -17,8 +16,8 @@ function SignIn() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const refusal = error === NOT_ALLOWLISTED ? NOT_ALLOWLISTED_MESSAGE : undefined;
-  const initialMessage = refusal ?? (error ? GENERIC_SIGN_IN_FAILURE : undefined);
+  // The road in reports a failure as a code; the same copy answers for every path.
+  const initialMessage = error === undefined ? undefined : failureMessage(error);
 
   async function googleSignIn() {
     return authClient.signIn.social({

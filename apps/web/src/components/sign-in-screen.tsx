@@ -109,7 +109,7 @@ export function SignInScreen({
     }
   }
 
-  function useDifferentAddress() {
+  function chooseDifferentAddress() {
     setNotice(undefined);
     setFailure(undefined);
     setCode("");
@@ -192,7 +192,7 @@ export function SignInScreen({
                 >
                   {sendPending ? "Sending…" : "Send a new code"}
                 </Button>
-                <Button onClick={useDifferentAddress} type="button" variant="ghost">
+                <Button onClick={chooseDifferentAddress} type="button" variant="ghost">
                   Use a different address
                 </Button>
               </form>

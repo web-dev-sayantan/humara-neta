@@ -11,7 +11,18 @@ import { emailOTP } from "better-auth/plugins/email-otp";
 import { NOT_ALLOWLISTED, NOT_ALLOWLISTED_MESSAGE } from "./refusal";
 import { ONE_TIME_CODE, type OneTimeCode } from "./one-time-code";
 
-const ONE_TIME_CODE_PATH = "/email-otp/send-verification-otp";
+/**
+ * Every Better Auth path that mails a one-time code, and the body field naming
+ * the recipient. All of them are gated: a de-allowlisted address keeps its
+ * `user` row for audit stamps, so a password-reset path would otherwise mail
+ * someone whose access has been removed.
+ */
+const MAILING_PATHS = new Map<string, "email" | "newEmail">([
+  ["/email-otp/send-verification-otp", "email"],
+  ["/email-otp/request-password-reset", "email"],
+  ["/forget-password/email-otp", "email"],
+  ["/email-otp/request-email-change", "newEmail"],
+]);
 
 export interface AuthConfig {
   db: Database;
@@ -30,7 +41,7 @@ export interface AuthConfig {
  * - `session.create.before` refuses a session for an address whose allowlist row
  *   has since been removed, so revocation does not need their user row deleted;
  * - the request hook refuses to mint a one-time code for such an email, so no
- *   pointless mail is sent either.
+ *   pointless mail is sent either — on any of the paths that send one.
  *
  * Both checks read the same allowlist row. Nothing in the application writes it.
  *
@@ -66,17 +77,19 @@ export function createAuth(config: AuthConfig) {
         allowedAttempts: ONE_TIME_CODE.allowedAttempts,
         // A code at rest is a credential: keep a digest, never the digits.
         storeOTP: "hashed",
-        sendVerificationOTP: ({ email, otp }) => config.sendVerificationOTP({ email, otp }),
+        sendVerificationOTP: config.sendVerificationOTP,
       }),
     ],
     hooks: {
       before: createAuthMiddleware(async (ctx) => {
-        if (ctx.path !== ONE_TIME_CODE_PATH) {
+        const recipientField = MAILING_PATHS.get(ctx.path);
+
+        if (!recipientField) {
           return;
         }
 
-        const email = typeof ctx.body?.email === "string" ? ctx.body.email : null;
-        await refuseUnlessAllowlisted(email);
+        const recipient: unknown = ctx.body?.[recipientField];
+        await refuseUnlessAllowlisted(typeof recipient === "string" ? recipient : null);
       }),
     },
     databaseHooks: {

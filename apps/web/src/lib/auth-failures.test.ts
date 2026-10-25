@@ -24,4 +24,10 @@ describe("sign-in failure copy", () => {
     expect(failureMessage(undefined)).toBe(GENERIC_SIGN_IN_FAILURE);
     expect(failureMessage("SOMETHING_NEW")).toBe(GENERIC_SIGN_IN_FAILURE);
   });
+
+  it("does not let a code that only looks like a key reach the screen", () => {
+    expect(failureMessage("")).toBe(GENERIC_SIGN_IN_FAILURE);
+    expect(failureMessage("constructor")).toBe(GENERIC_SIGN_IN_FAILURE);
+    expect(failureMessage("toString")).toBe(GENERIC_SIGN_IN_FAILURE);
+  });
 });

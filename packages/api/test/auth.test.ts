@@ -79,6 +79,21 @@ describe("allowlist-gated sign-in", () => {
     expect(await harness.db.select().from(schema.verification)).toHaveLength(0);
   });
 
+  it("mails no code to a de-allowlisted address, on any path that sends one", async () => {
+    const harness = await createTestHarness();
+    await harness.addUser({ name: "Ada Lovelace", email: "ada@example.com" });
+
+    await expect(
+      harness.auth.api.requestPasswordResetEmailOTP({ body: { email: "ada@example.com" } }),
+    ).rejects.toMatchObject({ status: "FORBIDDEN", body: { code: NOT_ALLOWLISTED } });
+
+    await expect(
+      harness.auth.api.forgetPasswordEmailOTP({ body: { email: "ada@example.com" } }),
+    ).rejects.toMatchObject({ status: "FORBIDDEN", body: { code: NOT_ALLOWLISTED } });
+
+    expect(harness.sentOTPs).toHaveLength(0);
+  });
+
   it("refuses to create an account for a non-allowlisted email even when a valid code is presented", async () => {
     const harness = await createTestHarness();
     const otp = await harness.auth.api.createVerificationOTP({
