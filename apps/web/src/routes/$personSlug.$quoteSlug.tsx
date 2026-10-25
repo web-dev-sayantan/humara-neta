@@ -1,11 +1,12 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 
+import { QuoteCard } from "@/components/quote-card";
 import { isNotFound } from "@/lib/orpc-errors";
 
 /**
- * The permalink a Quote is shared by: `/<person-slug>/<quote-slug>`. Plain on
- * purpose — the square Card component is its own ticket (#6); what this page
- * proves is the whole data path from the admin form to a shareable URL.
+ * The permalink a Quote is shared by: `/<person-slug>/<quote-slug>`. The Card is
+ * the hero; what can never live inside it — the Editorial note, and later the
+ * Sources and the share control — sits below.
  */
 export const Route = createFileRoute("/$personSlug/$quoteSlug")({
   loader: async ({ context, params }) => {
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/$personSlug/$quoteSlug")({
 
 function QuotePage() {
   const quote = Route.useLoaderData();
-  const hasFootnote = quote.date !== null || quote.place !== null;
+  const total = quote.cards.length;
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-10">
@@ -54,14 +55,21 @@ function QuotePage() {
         </h1>
       </header>
 
-      <div className="flex flex-col gap-4">
-        {quote.cards.map((card) => (
-          <blockquote
+      {/* A Carousel in one column until #11 turns it into something a reader
+          swipes; each Card here is the same node the feeds will use. */}
+      <div className="mx-auto flex w-full max-w-[34rem] flex-col gap-4">
+        {quote.cards.map((card, index) => (
+          <QuoteCard
             key={card.id}
-            className="border p-6 text-xl leading-relaxed whitespace-pre-wrap"
-          >
-            {card.text}
-          </blockquote>
+            backgroundSeed={quote.slug}
+            date={quote.date}
+            personName={quote.person.name}
+            place={quote.place}
+            position={index + 1}
+            priority={index === 0}
+            text={card.text}
+            total={total}
+          />
         ))}
       </div>
 
@@ -69,19 +77,10 @@ function QuotePage() {
         <h2 className="text-muted-foreground text-xs tracking-wide uppercase">
           Editorial note
         </h2>
-        <p className="text-sm leading-relaxed whitespace-pre-wrap">
+        <p className="text-sm leading-relaxed wrap-break-word whitespace-pre-wrap">
           {quote.editorialNote}
         </p>
       </section>
-
-      {hasFootnote ? (
-        <footer className="text-muted-foreground flex flex-wrap gap-x-4 gap-y-1 text-xs">
-          {quote.date === null ? null : (
-            <time dateTime={quote.date}>{quote.date}</time>
-          )}
-          {quote.place === null ? null : <span>{quote.place}</span>}
-        </footer>
-      ) : null}
     </main>
   );
 }

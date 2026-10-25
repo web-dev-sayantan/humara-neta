@@ -1,1 +1,103 @@
 @import "@humara-neta/ui/globals.css";
+
+@layer components {
+  /* A Card composites type over a photograph, so the photograph is kept quiet
+     in one of two ways: lifted towards the paper in light mode, where the type
+     over it is near-black, and pulled down towards the ink in dark mode, where
+     the type is near-white. Both are filters rather than a second asset, so a
+     Quote's photo is the same photo in either theme, and one 1200px image
+     serves both. The transition is eased over half a second so that switching
+     appearance settles rather than flashes. */
+  .card-photo {
+    filter: brightness(1.06) saturate(0.85) contrast(0.9);
+    transition: filter 600ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .dark .card-photo {
+    filter: brightness(0.5) saturate(0.8) contrast(1.05);
+  }
+
+  /* The scrim is what guarantees the contrast: it is not there to tint the
+     photo but to hold the type above a known tone whatever the photo does. */
+  .card-scrim {
+    background-color: rgb(255 255 255 / 52%);
+    transition: background-color 600ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .dark .card-scrim {
+    background-color: rgb(0 0 0 / 50%);
+  }
+
+  /* The words. Size comes from the Card's own width and has no floor: a floor
+     would stop very long text shrinking while the square kept its size, and
+     the overflow is hidden, which is exactly the truncation the template
+     exists to prevent. */
+  .card-quote {
+    font-size: var(--card-size);
+    letter-spacing: var(--card-tracking);
+    line-height: var(--card-leading);
+  }
+
+  /* A vignette, so the Date and the Place sit on a slightly deeper ground than
+     the words between them and the Card reads as a surface rather than a flat
+     paste-up. */
+  .card-vignette {
+    background-image: radial-gradient(
+      130% 110% at 50% 0%,
+      rgb(255 255 255 / 0%) 40%,
+      rgb(255 255 255 / 55%) 100%
+    );
+  }
+
+  .dark .card-vignette {
+    background-image: radial-gradient(
+      130% 110% at 50% 0%,
+      rgb(0 0 0 / 0%) 40%,
+      rgb(0 0 0 / 60%) 100%
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-photo,
+    .card-scrim {
+      transition: none;
+    }
+  }
+
+  /* Someone who has asked for more contrast gets a flatter, more opaque ground
+     rather than the photograph's own tones. */
+  @media (prefers-contrast: more) {
+    .card-scrim {
+      background-color: rgb(255 255 255 / 82%);
+    }
+
+    .dark .card-scrim {
+      background-color: rgb(0 0 0 / 80%);
+    }
+
+    .card-vignette {
+      display: none;
+    }
+  }
+
+  /* The domain mark is load-bearing, not decoration: a screenshot travels
+     without its Sources (ADR-0002), so it is the only way back to the site.
+     Never smaller than a phone can read, whatever width the Card lands at. */
+  .card-mark {
+    font-size: max(2.5cqw, 9px);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    opacity: 0.75;
+  }
+
+  /* A Date or a Place is a footnote to the words, never a heading, so it is
+     set small with the positive tracking small type needs to stay legible. */
+  .card-meta {
+    font-size: max(2.6cqw, 9px);
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+}

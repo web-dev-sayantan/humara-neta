@@ -12,6 +12,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { orpc } from "@/utils/orpc";
 
 import Header from "../components/header";
+import { ThemeProvider } from "../components/theme-provider";
 
 import appCss from "../index.css?url";
 
@@ -47,18 +48,25 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
 function RootDocument() {
   return (
-    <html lang="en" className="dark">
+    // The appearance class is written onto <html> by next-themes before the
+    // first paint, which is a difference from the server's markup by design.
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
-        <div className="grid h-svh grid-rows-[auto_1fr]">
-          <Header />
-          <Outlet />
-        </div>
-        <Toaster richColors />
-        <TanStackRouterDevtools position="bottom-left" />
-        <ReactQueryDevtools position="bottom" buttonPosition="bottom-right" />
+        <ThemeProvider>
+          {/* `min-w-0` on the row's children: a grid item will otherwise refuse
+              to be narrower than its longest unbreakable word, which lets one
+              pasted URL widen the page and every Card on it. */}
+          <div className="grid h-svh grid-rows-[auto_1fr] [&>*]:min-w-0">
+            <Header />
+            <Outlet />
+          </div>
+          <Toaster richColors />
+          <TanStackRouterDevtools position="bottom-left" />
+          <ReactQueryDevtools position="bottom" buttonPosition="bottom-right" />
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>
