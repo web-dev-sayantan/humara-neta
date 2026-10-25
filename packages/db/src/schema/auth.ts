@@ -1,4 +1,9 @@
-import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import {
+  integer,
+  sqliteTable,
+  text,
+  uniqueIndex,
+} from "drizzle-orm/sqlite-core";
 
 /**
  * Better Auth's own tables. The application reads `user` for display and for
@@ -10,7 +15,9 @@ export const user = sqliteTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: integer("email_verified", { mode: "boolean" }).notNull().default(false),
+  emailVerified: integer("email_verified", { mode: "boolean" })
+    .notNull()
+    .default(false),
   image: text("image"),
   createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
@@ -65,5 +72,7 @@ export const verification = sqliteTable(
   // inserting again and, when that is refused, replacing the row; without the
   // constraint a resend would instead leave two code rows and a lookup could
   // resolve the stale one.
-  (table) => [uniqueIndex("verification_identifier_unique").on(table.identifier)],
+  (table) => [
+    uniqueIndex("verification_identifier_unique").on(table.identifier),
+  ]
 );

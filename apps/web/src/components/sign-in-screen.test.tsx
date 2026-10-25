@@ -4,18 +4,27 @@ import {
   NOT_ALLOWLISTED,
   NOT_ALLOWLISTED_MESSAGE,
 } from "@humara-neta/api/refusal";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { type SignInScreenProps, SignInScreen } from "./sign-in-screen";
+import { SignInScreen } from "./sign-in-screen";
+import type { SignInScreenProps } from "./sign-in-screen";
 
 afterEach(cleanup);
 
 type ScreenOptions = Partial<SignInScreenProps>;
 
 function renderScreen(options: ScreenOptions = {}) {
-  const googleSignIn = options.googleSignIn ?? vi.fn(async () => ({ error: null }));
-  const requestCode = options.requestCode ?? vi.fn(async () => ({ error: null }));
+  const googleSignIn =
+    options.googleSignIn ?? vi.fn(async () => ({ error: null }));
+  const requestCode =
+    options.requestCode ?? vi.fn(async () => ({ error: null }));
   const verifyCode = options.verifyCode ?? vi.fn(async () => ({ error: null }));
   const onSignedIn = options.onSignedIn ?? vi.fn();
 
@@ -25,7 +34,7 @@ function renderScreen(options: ScreenOptions = {}) {
       requestCode={requestCode}
       verifyCode={verifyCode}
       onSignedIn={onSignedIn}
-    />,
+    />
   );
 
   return { googleSignIn, requestCode, verifyCode, onSignedIn };
@@ -96,17 +105,23 @@ describe("sign-in screen", () => {
 
   it("shows why a code was refused and does not pretend to be signed in", async () => {
     const { onSignedIn } = await openCodeStage({
-      verifyCode: vi.fn(async () => ({ error: { code: INVALID_ONE_TIME_CODE } })),
+      verifyCode: vi.fn(async () => ({
+        error: { code: INVALID_ONE_TIME_CODE },
+      })),
     });
 
     await enterCode("000000");
 
-    expect((await screen.findByText(/didn't match/i)).textContent).toMatch(/check the six digits/i);
+    expect((await screen.findByText(/didn't match/i)).textContent).toMatch(
+      /check the six digits/i
+    );
     expect(onSignedIn).not.toHaveBeenCalled();
   });
 
   it("shows the allowlist refusal without asking for a code", async () => {
-    renderScreen({ requestCode: vi.fn(async () => ({ error: { code: NOT_ALLOWLISTED } })) });
+    renderScreen({
+      requestCode: vi.fn(async () => ({ error: { code: NOT_ALLOWLISTED } })),
+    });
 
     fireEvent.click(screen.getByRole("button", { name: /code instead/i }));
     fireEvent.change(screen.getByLabelText("Email address"), {
@@ -115,7 +130,7 @@ describe("sign-in screen", () => {
     fireEvent.click(screen.getByRole("button", { name: /email me a code/i }));
 
     expect((await screen.findByText(NOT_ALLOWLISTED_MESSAGE)).textContent).toBe(
-      NOT_ALLOWLISTED_MESSAGE,
+      NOT_ALLOWLISTED_MESSAGE
     );
     expect(screen.queryByLabelText(/six-digit code/i)).toBeNull();
   });

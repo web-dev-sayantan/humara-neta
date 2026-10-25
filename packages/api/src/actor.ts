@@ -20,7 +20,10 @@ export interface Identity {
  * Turns a signed-in identity into an actor, or `null` when the email has no
  * allowlist row. Resolved once per request, in the context builder.
  */
-export async function resolveActor(db: Database, identity: Identity | null): Promise<Actor | null> {
+export async function resolveActor(
+  db: Database,
+  identity: Identity | null
+): Promise<Actor | null> {
   if (!identity) {
     return null;
   }

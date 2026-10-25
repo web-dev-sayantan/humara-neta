@@ -15,7 +15,7 @@ export const allowlist = sqliteTable(
   (table) => [
     check("allowlist_role", sql`${table.role} in ('admin', 'editor')`),
     uniqueIndex("allowlist_email_lower").on(sql`lower(${table.email})`),
-  ],
+  ]
 );
 
 export type Role = (typeof allowlist.$inferSelect)["role"];

@@ -2,8 +2,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { SignInScreen } from "@/components/sign-in-screen";
-import { failureMessage } from "@/lib/auth-failures";
 import { authClient } from "@/lib/auth-client";
+import { failureMessage } from "@/lib/auth-failures";
 
 export const Route = createFileRoute("/sign-in")({
   validateSearch: (search: Record<string, unknown>): { error?: string } =>
@@ -17,7 +17,8 @@ function SignIn() {
   const queryClient = useQueryClient();
 
   // The road in reports a failure as a code; the same copy answers for every path.
-  const initialMessage = error === undefined ? undefined : failureMessage(error);
+  const initialMessage =
+    error === undefined ? undefined : failureMessage(error);
 
   async function googleSignIn() {
     return authClient.signIn.social({

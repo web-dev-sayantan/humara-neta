@@ -20,11 +20,15 @@ export interface BuildContextInput {
  * the session, the allowlist supplies the role, and procedures only ever see
  * `actor`. Tests construct the context directly instead of faking a session.
  */
-export async function buildContext({ db, auth, headers }: BuildContextInput): Promise<Context> {
+export async function buildContext({
+  db,
+  auth,
+  headers,
+}: BuildContextInput): Promise<Context> {
   const session = await auth.api.getSession({ headers });
   const actor = await resolveActor(
     db,
-    session ? { userId: session.user.id, email: session.user.email } : null,
+    session ? { userId: session.user.id, email: session.user.email } : null
   );
 
   return { db, actor };

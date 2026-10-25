@@ -10,7 +10,7 @@ export const Route = createFileRoute("/admin")({
   beforeLoad: async ({ context }) => {
     try {
       const viewer = await context.queryClient.ensureQueryData(
-        context.orpc.admin.me.queryOptions(),
+        context.orpc.admin.me.queryOptions()
       );
 
       return { viewer };
@@ -25,7 +25,10 @@ export const Route = createFileRoute("/admin")({
   component: AdminShell,
 });
 
-const ROLE_LABEL = { admin: "Administrator", editor: "Editor" } satisfies Record<Role, string>;
+const ROLE_LABEL = {
+  admin: "Administrator",
+  editor: "Editor",
+} satisfies Record<Role, string>;
 
 function AdminShell() {
   const { viewer } = Route.useRouteContext();
@@ -45,9 +48,15 @@ function AdminShell() {
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-10">
       <header className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <p className="text-muted-foreground text-xs tracking-wide uppercase">Signed in as</p>
-          <h1 className="text-2xl font-medium">{viewer.name || viewer.email}</h1>
-          <p className="text-muted-foreground text-sm">{ROLE_LABEL[viewer.role]}</p>
+          <p className="text-muted-foreground text-xs tracking-wide uppercase">
+            Signed in as
+          </p>
+          <h1 className="text-2xl font-medium">
+            {viewer.name || viewer.email}
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            {ROLE_LABEL[viewer.role]}
+          </p>
         </div>
         <Button onClick={signOut} variant="outline">
           Sign out

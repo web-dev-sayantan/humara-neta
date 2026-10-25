@@ -17,11 +17,13 @@ describe("sign-in failure copy", () => {
   it("tells someone a wrong, expired, or exhausted code what to do next", () => {
     expect(failureMessage(INVALID_ONE_TIME_CODE)).toMatch(/didn't match/i);
     expect(failureMessage(ONE_TIME_CODE_EXPIRED)).toMatch(/expired/i);
-    expect(failureMessage(TOO_MANY_ONE_TIME_CODE_ATTEMPTS)).toMatch(/too many/i);
+    expect(failureMessage(TOO_MANY_ONE_TIME_CODE_ATTEMPTS)).toMatch(
+      /too many/i
+    );
   });
 
   it("falls back to a generic failure rather than showing a raw code", () => {
-    expect(failureMessage(undefined)).toBe(GENERIC_SIGN_IN_FAILURE);
+    expect(failureMessage()).toBe(GENERIC_SIGN_IN_FAILURE);
     expect(failureMessage("SOMETHING_NEW")).toBe(GENERIC_SIGN_IN_FAILURE);
   });
 

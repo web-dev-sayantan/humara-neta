@@ -13,7 +13,10 @@ export function normalizeEmail(email: string): string {
  * The role the allowlist grants an email address, or `null` when the address is
  * not on it. Reads only: the application never writes to the allowlist.
  */
-export async function findAllowlistRole(db: Database, email: string): Promise<Role | null> {
+export async function findAllowlistRole(
+  db: Database,
+  email: string
+): Promise<Role | null> {
   const [row] = await db
     .select({ role: allowlist.role })
     .from(allowlist)

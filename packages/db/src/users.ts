@@ -6,7 +6,10 @@ import { user } from "./schema/auth";
 export type AuthUser = Pick<typeof user.$inferSelect, "id" | "name" | "email">;
 
 /** The auth user a session belongs to, for display and audit stamps. */
-export async function findAuthUser(db: Database, userId: string): Promise<AuthUser | null> {
+export async function findAuthUser(
+  db: Database,
+  userId: string
+): Promise<AuthUser | null> {
   const [row] = await db
     .select({ id: user.id, name: user.name, email: user.email })
     .from(user)

@@ -6,7 +6,7 @@ Entries are edited in place: there is no revision history, no draft/published wo
 
 - **Draft → published workflow with frozen revisions** (recommended during design, declined): protects the promise that a card shared six months ago still matches what the page says, but costs a revisions table and a second editing surface in v1.
 - **Soft verification flags** (e.g. an `unverified` boolean): rejected because a state the application never enforces is a state that will drift out of sync with reality.
-- **Full audit log table**: deferred. `created_by` / `updated_by` records *who touched it and when*, not *what changed*.
+- **Full audit log table**: deferred. `created_by` / `updated_by` records _who touched it and when_, not _what changed_.
 
 ## Consequences
 

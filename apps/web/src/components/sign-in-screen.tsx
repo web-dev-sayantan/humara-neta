@@ -2,7 +2,8 @@ import { ONE_TIME_CODE } from "@humara-neta/api/one-time-code";
 import { Button } from "@humara-neta/ui/components/button";
 import { Input } from "@humara-neta/ui/components/input";
 import { Label } from "@humara-neta/ui/components/label";
-import { type FormEvent, useId, useState } from "react";
+import { useId, useState } from "react";
+import type { FormEvent } from "react";
 
 import { GENERIC_SIGN_IN_FAILURE, failureMessage } from "../lib/auth-failures";
 
@@ -20,7 +21,8 @@ export interface SignInScreenProps {
   initialMessage?: string;
 }
 
-const HINT = "The panel is open to people whose address has been added to the list.";
+const HINT =
+  "The panel is open to people whose address has been added to the list.";
 
 const CODE_PATTERN = new RegExp(`^\\d{${ONE_TIME_CODE.length}}$`);
 
@@ -60,7 +62,7 @@ export function SignInScreen({
    */
   async function attempt(
     setPending: (pending: boolean) => void,
-    call: () => Promise<SignInAttempt>,
+    call: () => Promise<SignInAttempt>
   ): Promise<boolean> {
     setPending(true);
     setFailure(undefined);
@@ -146,7 +148,10 @@ export function SignInScreen({
         </Button>
 
         {formOpen ? (
-          <div className="border-border flex flex-col gap-4 border p-4" id={formId}>
+          <div
+            className="border-border flex flex-col gap-4 border p-4"
+            id={formId}
+          >
             {stage === "email" ? (
               <form className="flex flex-col gap-3" onSubmit={sendCode}>
                 <div className="flex flex-col gap-2">
@@ -181,7 +186,11 @@ export function SignInScreen({
                     value={code}
                   />
                 </div>
-                <Button disabled={verifyPending} type="submit" variant="outline">
+                <Button
+                  disabled={verifyPending}
+                  type="submit"
+                  variant="outline"
+                >
                   {verifyPending ? "Signing in…" : "Sign in"}
                 </Button>
                 <Button
@@ -192,7 +201,11 @@ export function SignInScreen({
                 >
                   {sendPending ? "Sending…" : "Send a new code"}
                 </Button>
-                <Button onClick={chooseDifferentAddress} type="button" variant="ghost">
+                <Button
+                  onClick={chooseDifferentAddress}
+                  type="button"
+                  variant="ghost"
+                >
                   Use a different address
                 </Button>
               </form>

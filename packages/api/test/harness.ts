@@ -6,7 +6,8 @@ import { createRouterClient } from "@orpc/server";
 
 import type { Actor, Role } from "../src/actor";
 import { createAuth } from "../src/auth";
-import { type Context, buildContext } from "../src/context";
+import { buildContext } from "../src/context";
+import type { Context } from "../src/context";
 import { appRouter } from "../src/routers/index";
 
 export interface SentOTP {
@@ -15,7 +16,13 @@ export interface SentOTP {
 }
 
 /** A Google profile shaped like a decoded ID token, without reaching Google. */
-function googleIdToken({ email, name }: { email: string; name: string }): string {
+function googleIdToken({
+  email,
+  name,
+}: {
+  email: string;
+  name: string;
+}): string {
   const claims = { sub: `google-${email}`, email, email_verified: true, name };
   const payload = Buffer.from(JSON.stringify(claims)).toString("base64url");
   return `header.${payload}.signature`;

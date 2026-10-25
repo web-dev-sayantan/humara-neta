@@ -29,7 +29,9 @@ describe("the actor seam", () => {
       email: "ada@example.com",
     });
 
-    const viewer = await harness.clientFor({ userId, role: "editor" }).admin.me();
+    const viewer = await harness
+      .clientFor({ userId, role: "editor" })
+      .admin.me();
 
     expect(viewer).toEqual({
       name: "Ada Lovelace",

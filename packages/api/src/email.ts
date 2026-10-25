@@ -1,4 +1,5 @@
-import { ONE_TIME_CODE, type OneTimeCode } from "./one-time-code";
+import { ONE_TIME_CODE } from "./one-time-code";
+import type { OneTimeCode } from "./one-time-code";
 
 export interface ResendSenderConfig {
   apiKey: string;
@@ -16,11 +17,12 @@ const EXPIRES_IN_MINUTES = ONE_TIME_CODE.expiresInSeconds / 60;
  * this function only knows how, so a refusal to mail someone never lives here.
  */
 export function createResendSender(
-  config: ResendSenderConfig,
+  config: ResendSenderConfig
 ): (code: OneTimeCode) => Promise<void> {
   const send =
     config.fetch ??
-    ((input: RequestInfo | URL, init?: RequestInit) => globalThis.fetch(input, init));
+    ((input: RequestInfo | URL, init?: RequestInit) =>
+      globalThis.fetch(input, init));
 
   return async ({ email, otp }) => {
     const response = await send(RESEND_ENDPOINT, {

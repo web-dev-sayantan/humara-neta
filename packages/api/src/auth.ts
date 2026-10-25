@@ -1,15 +1,16 @@
 import type { Database } from "@humara-neta/db";
 import { findAllowlistRole } from "@humara-neta/db/allowlist";
-import { findAuthUser } from "@humara-neta/db/users";
 import * as schema from "@humara-neta/db/schema/index";
+import { findAuthUser } from "@humara-neta/db/users";
 import { betterAuth } from "better-auth";
-import type { GoogleOptions } from "better-auth/social-providers";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { emailOTP } from "better-auth/plugins/email-otp";
+import type { GoogleOptions } from "better-auth/social-providers";
 
+import { ONE_TIME_CODE } from "./one-time-code";
+import type { OneTimeCode } from "./one-time-code";
 import { NOT_ALLOWLISTED, NOT_ALLOWLISTED_MESSAGE } from "./refusal";
-import { ONE_TIME_CODE, type OneTimeCode } from "./one-time-code";
 
 /**
  * Every Better Auth path that mails a one-time code, and the body field naming
@@ -89,7 +90,9 @@ export function createAuth(config: AuthConfig) {
         }
 
         const recipient: unknown = ctx.body?.[recipientField];
-        await refuseUnlessAllowlisted(typeof recipient === "string" ? recipient : null);
+        await refuseUnlessAllowlisted(
+          typeof recipient === "string" ? recipient : null
+        );
       }),
     },
     databaseHooks: {

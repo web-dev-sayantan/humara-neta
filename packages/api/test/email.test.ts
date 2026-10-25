@@ -37,7 +37,10 @@ describe("Resend one-time-code email", () => {
     expect(headers.get("authorization")).toBe("Bearer re_test_key");
     expect(headers.get("content-type")).toBe("application/json");
 
-    const body = JSON.parse(String(request?.init?.body)) as Record<string, unknown>;
+    const body = JSON.parse(String(request?.init?.body)) as Record<
+      string,
+      unknown
+    >;
     expect(body).toMatchObject({
       from: "humara-neta <sign-in@example.com>",
       to: "ada@example.com",
@@ -51,6 +54,8 @@ describe("Resend one-time-code email", () => {
     const { fetch } = fakeFetch(422);
     const send = createResendSender({ ...CONFIG, fetch });
 
-    await expect(send({ email: "ada@example.com", otp: "898912" })).rejects.toThrow(/422/);
+    await expect(
+      send({ email: "ada@example.com", otp: "898912" })
+    ).rejects.toThrow(/422/);
   });
 });

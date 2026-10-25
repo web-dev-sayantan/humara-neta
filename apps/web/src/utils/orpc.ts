@@ -32,10 +32,8 @@ export function createQueryClient() {
 const getORPCClient = createIsomorphicFn()
   .server(() =>
     createRouterClient(appRouter, {
-      context: async () => {
-        return createContext({ req: getRequest() });
-      },
-    }),
+      context: async () => createContext({ req: getRequest() }),
+    })
   )
   .client((): RouterClient<typeof appRouter> => {
     const link = new RPCLink({
