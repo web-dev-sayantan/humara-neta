@@ -26,7 +26,7 @@ function isFailureCode(code: string): code is FailureCode {
 }
 
 /** The words the sign-in screen shows for the code Better Auth refused with. */
-export function failureMessage(code: string | undefined): string {
+export function failureMessage(code?: string): string {
   return code !== undefined && isFailureCode(code)
     ? FAILURE_MESSAGES[code]
     : GENERIC_SIGN_IN_FAILURE;

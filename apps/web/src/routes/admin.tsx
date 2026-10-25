@@ -3,6 +3,7 @@ import { Button } from "@humara-neta/ui/components/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 
+import { PersonPanel } from "@/components/person-panel";
 import { authClient } from "@/lib/auth-client";
 import { isUnauthorized } from "@/lib/orpc-errors";
 
@@ -63,12 +64,7 @@ function AdminShell() {
         </Button>
       </header>
 
-      <section className="border-border rounded-none border p-6">
-        <h2 className="font-medium">Nothing here yet</h2>
-        <p className="text-muted-foreground text-sm">
-          Persons and Quotes will be listed and edited from this panel.
-        </p>
-      </section>
+      <PersonPanel />
     </main>
   );
 }
