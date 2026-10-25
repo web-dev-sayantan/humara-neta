@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 
 import { PersonPanel } from "@/components/person-panel";
+import { QuotePanel } from "@/components/quote-panel";
 import { authClient } from "@/lib/auth-client";
 import { isUnauthorized } from "@/lib/orpc-errors";
 
@@ -65,6 +66,7 @@ function AdminShell() {
       </header>
 
       <PersonPanel />
+      <QuotePanel />
     </main>
   );
 }

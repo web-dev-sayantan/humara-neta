@@ -13,7 +13,7 @@ import { z } from "zod";
 import { authedProcedure } from "../authorize";
 import { publicProcedure } from "../index";
 import { PERSON_BIO_MAX, PERSON_NAME_MAX } from "../person-limits";
-import { slugify } from "../slug";
+import { nextFreeSlug, slugify } from "../slug";
 
 /**
  * Shown to whoever tries to move a slug that is already circulating. A refusal
@@ -35,16 +35,8 @@ function bioOrNull(bio: string | null | undefined): string | null {
 /** The first free slug for `name`: the name itself, then `-2`, `-3`, and so on. */
 async function availableSlug(db: Database, name: string): Promise<string> {
   const base = slugify(name) || "person";
-  const taken = new Set(await slugsUnder(db, base));
 
-  let slug = base;
-  let suffix = 2;
-  while (taken.has(slug)) {
-    slug = `${base}-${suffix}`;
-    suffix += 1;
-  }
-
-  return slug;
+  return nextFreeSlug(base, await slugsUnder(db, base));
 }
 
 export const personRouter = {
