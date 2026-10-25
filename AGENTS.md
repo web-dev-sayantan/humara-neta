@@ -137,7 +137,7 @@ See [NOTES.md](./NOTES.md) for temporary project-specific notes, including depen
 
 ### Issue tracker
 
-Issues and specs live in this repo's GitHub Issues (`Sheer-Daara/humara-neta`), driven with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+Issues and specs live in this repo's GitHub Issues (`web-dev-sayantan/humara-neta`), driven with the `gh` CLI. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
